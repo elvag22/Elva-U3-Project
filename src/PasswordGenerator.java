@@ -28,4 +28,23 @@ public class PasswordGenerator {
 
         JLabel passwordLabel = new JLabel("Your Password:");
         frame.add(passwordLabel);
+
+        passwordChoices = new JTextField(20);
+        passwordChoices.setEditable = (false);
+        frame.add(passwordChoices);
+
+        generateButton = new JButton("Click to make password!");
+        frame.add(generateButton);
+
+        private void passwordLengthChoice() {
+            String input = JOptionPane.showInputDialog(frame, "Enter how long you want your password to be as an integer");
+            if (input == null) return;
+            try {
+                int length = Integer.parseInt(input.trim());
+                if (length <= 0) {
+                    JOptionPane.showMessageDialog(frame, "Please enter a positive integer!");
+                    return;
+                }
+                
+
 }
