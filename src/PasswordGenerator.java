@@ -45,6 +45,36 @@ public class PasswordGenerator {
                     JOptionPane.showMessageDialog(frame, "Please enter a positive integer!");
                     return;
                 }
-                
+                String password = generatePassword(length);
+                passwordChoices.setText(password);
+                passwords.add(password);
+                lengths.add(length);
+                savePassword(password, length);
+            }
+        }
+        private String generatePassword(int length) {
+            String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            StringBuilder sb = new StringBuilder();
 
-}
+            for (int i = 0; i < length; i++) {
+                sb.append(chars.charAt(rand.nextInt(chars.length())));
+            }
+            return sb.toString();
+        }
+        //START CHATGPT CITATION
+        private void savePassword(String password, int length) throws IOException {
+            File file = new File("passwords.csv");
+            boolean newFile = file.createNewFile();
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
+                if (newFile) {
+                    writer.write("Password,Length");
+                    writer.newLine();
+                }
+                writer.write(password + "," + length);
+                writer.newLine();
+            }
+            //END CHATGPT CITATION
+        }
+
+
+            }
