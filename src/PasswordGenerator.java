@@ -4,6 +4,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Random;
 import java.io.*;
+
 import org.jfree.chart.*;
 import org.jfree.chart.plot.*;
 import org.jfree.data.category.*;
@@ -17,7 +18,7 @@ public class PasswordGenerator {
     private Random rand = new Random();
 
     public PasswordGenerator() {
-        createGUI()
+        createGUI();
     }
 
     private void createGUI() {
@@ -30,51 +31,75 @@ public class PasswordGenerator {
         frame.add(passwordLabel);
 
         passwordChoices = new JTextField(20);
-        passwordChoices.setEditable = (false);
+        passwordChoices.setEditable(false);
         frame.add(passwordChoices);
 
         generateButton = new JButton("Click to make password!");
         frame.add(generateButton);
+        generateButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                passwordLengthChoice();
+            }
+        });
+         chartButton - new JButton("Show password lengths");
+         
+        frame.setVisible(true);
+    }
 
-        private void passwordLengthChoice() {
-            String input = JOptionPane.showInputDialog(frame, "Enter how long you want your password to be as an integer");
-            if (input == null) return;
+
+    private void passwordLengthChoice() {
+        String input = JOptionPane.showInputDialog(frame, "Enter how long you want your password to be as an integer");
+        if (input == null) return;
+        try {
+            int length = Integer.parseInt(input.trim());
+            if (length <= 0) {
+                JOptionPane.showMessageDialog(frame, "Please enter a positive integer!");
+                return;
+            }
+            String password = generatePassword(length);
+            passwordChoices.setText(password);
+            passwords.add(password);
+            lengths.add(length);
             try {
-                int length = Integer.parseInt(input.trim());
-                if (length <= 0) {
-                    JOptionPane.showMessageDialog(frame, "Please enter a positive integer!");
-                    return;
-                }
-                String password = generatePassword(length);
-                passwordChoices.setText(password);
-                passwords.add(password);
-                lengths.add(length);
                 savePassword(password, length);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(frame, "Error saving password: " + ex.getMessage());
             }
-        }
-        private String generatePassword(int length) {
-            String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            StringBuilder sb = new StringBuilder();
 
-            for (int i = 0; i < length; i++) {
-                sb.append(chars.charAt(rand.nextInt(chars.length())));
-            }
-            return sb.toString();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(frame, "Please enter a valid number.");
         }
-        //START CHATGPT CITATION
-        private void savePassword(String password, int length) throws IOException {
-            File file = new File("passwords.csv");
-            boolean newFile = file.createNewFile();
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
-                if (newFile) {
-                    writer.write("Password,Length");
-                    writer.newLine();
-                }
-                writer.write(password + "," + length);
+    }
+
+    private String generatePassword(int length) {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        String password = "";
+        for (int i = 0; i < length; i++) {
+            password += chars.charAt(rand.nextInt(chars.length()));
+        }
+        return password;
+
+    }
+
+    //START CHATGPT CITATION
+    private void savePassword(String password, int length) throws IOException {
+        File file = new File("passwords.csv");
+        boolean newFile = file.createNewFile();
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
+            if (newFile) {
+                writer.write("Password,Length");
                 writer.newLine();
             }
-            //END CHATGPT CITATION
+            writer.write(password + "," + length);
+            writer.newLine();
         }
+        //END CHATGPT CITATION
+    }
+
+    public static void main(String[] args) {
+        new PasswordGenerator();
+    }
 
 
-            }
+}
+
