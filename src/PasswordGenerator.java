@@ -19,6 +19,7 @@ public class PasswordGenerator {
 
     public PasswordGenerator() {
         createGUI();
+        frame.setVisible(true);
     }
 
     private void createGUI() {
@@ -41,9 +42,15 @@ public class PasswordGenerator {
                 passwordLengthChoice();
             }
         });
-         chartButton - new JButton("Show password lengths");
-         
-        frame.setVisible(true);
+        chartButton = new JButton("Show password lengths");
+        frame.add(chartButton);
+        chartButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                showChart();
+
+            }
+        });
+
     }
 
 
@@ -96,10 +103,36 @@ public class PasswordGenerator {
         //END CHATGPT CITATION
     }
 
+    private void showChart() {
+        if (lengths.isEmpty()) {
+            JOptionPane.showMessageDialog(frame, "No passwords are made yet!");
+            return;
+        }
+
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        for (int i = 0; i < passwords.size(); i++) {
+            dataset.addValue(lengths.get(i), "Passoword Length", "Password Number" + (i + 1));
+        }
+
+        JFreeChart chart = ChartFactory.createBarChart(
+                "Password Lengths,",
+                "Password",
+                "Length",
+                dataset,
+                PlotOrientation.VERTICAL,
+                false, true, false
+        );
+
+        ChartFrame chartFrame = new ChartFrame("Password Length Chart", chart);
+        chartFrame.setSize(500, 400);
+        chartFrame.setVisible(true);
+
+
+    }
+
     public static void main(String[] args) {
         new PasswordGenerator();
     }
-
-
 }
+
 
